@@ -36,9 +36,18 @@
           </template>
         </a-switch>
       </div>
-      <div class="user" shadow shadow-white cursor-pointer>
-        <a-avatar src="https://joeschmoe.io/api/v1/random" />
-      </div>
+      <a-dropdown :trigger="['click']">
+        <div class="user" shadow shadow-white cursor-pointer>
+          <a-avatar src="https://joeschmoe.io/api/v1/random" />
+        </div>
+        <template #overlay>
+          <a-menu @click="onClickMenu">
+            <a-menu-item key="exit">
+              <span>退出登录</span>
+            </a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
     </div>
   </div>
 </template>
@@ -46,6 +55,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import useSettingStore from "@/store/setting";
+import useUserStore from "@/store/user"
+import { muenFace } from "@/typings/types";
 import { toggleTheme } from "@zougt/vite-plugin-theme-preprocessor/dist/browser-utils.js";
 defineProps({
   siderBarOpen: {
@@ -61,7 +72,19 @@ const onClickChange = () => {
 const themes = ref("theme-default");
 const onChangeTheme = (value: string) => {
   toggleTheme({
-    scopeName: value
+    scopeName: value,
+  });
+};
+const onClickMenu = ({ key }: muenFace) => {
+  switch (key) {
+    case "exit":
+      onClickExit();
+      break;
+  }
+};
+const onClickExit = () => {
+  useUserStore().logout().then(() => {
+    location.href = "/index"
   })
 };
 </script>

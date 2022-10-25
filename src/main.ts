@@ -1,4 +1,4 @@
-import { createApp, computed, nextTick } from "vue";
+import { createApp, computed, Directive } from "vue";
 import App from "./App.vue";
 import router from "./router/index";
 import Antd from "ant-design-vue";
@@ -9,6 +9,7 @@ import "uno.css";
 import "ant-design-vue/dist/antd.css";
 import "./styles/base.less";
 import { getLocalData } from "./utils/local";
+import * as directive from "./directive"
 
 const VueWait = createVueWait();
 const pinia = createPinia();
@@ -19,14 +20,17 @@ app.use(router);
 app.use(Antd);
 app.use(VueWait);
 app.mount("#app");
+Object.keys(directive).map((key) => {
+  app.directive(key, (directive as { [key: string]: Directive })[key]);
+})
 const whiteList = ["/login"];
 import useUserStore from "@/store/user";
 import usePermissionStore from "@/store/permission";
 import { RouteRecordRaw } from "vue-router";
 // const permissionStore: any = usePermissionStore();
 let isRouter = computed(() => usePermissionStore().getIsRouter);
-const token = getLocalData("token");
 router.beforeEach(async (to: any, from, next) => {
+  const token = getLocalData("token");
   if (token) {
     if (to.path === "/login") {
       next({ path: "/" });
@@ -50,7 +54,7 @@ router.beforeEach(async (to: any, from, next) => {
     if (whiteList.includes(to.path)) {
       next();
     } else {
-      next();
+      next('/login');
     }
   }
 });

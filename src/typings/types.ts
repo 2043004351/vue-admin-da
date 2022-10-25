@@ -13,7 +13,7 @@ export interface userInfo {
 export interface muenFace {
   item: any;
   key: string;
-  keyPath: string;
+  keyPath: any[];
 }
 export interface fliterOptions {
   data?: any[];

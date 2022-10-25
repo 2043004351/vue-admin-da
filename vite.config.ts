@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import VueMacros from 'unplugin-vue-macros/vite'
 import vue from "@vitejs/plugin-vue";
 import Unocss from "unocss/vite";
@@ -19,10 +19,10 @@ export default defineConfig({
             // 变量文件内容不应该夹带样式代码，设定上只需存在变量
             path: resolve(__dirname, "src/styles/themes/default.less"),
           },
-          {
-            scopeName: "theme-dark",
-            path: resolve(__dirname, "src/styles/themes/dark.less"),
-          },
+          // {
+          //   scopeName: "theme-dark",
+          //   path: resolve(__dirname, "src/styles/themes/dark.less"),
+          // },
         ],
         extract: false,
         // themeLinkTagId: "theme-link-tag",
@@ -41,4 +41,13 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    proxy: {
+      "/dev-api": {
+        target: "http://159.75.101.23:8501",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/dev-api/, '')
+      }
+    }
+  }
 });

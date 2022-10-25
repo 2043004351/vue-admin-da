@@ -21,6 +21,13 @@ const data = [
         component: "system/user/index",
         meta: { title: "用户管理", icon: "user", noCache: false, link: null },
       },
+      {
+        name: "Menu",
+        path: "menu",
+        hidden: false,
+        component: "system/menu/index",
+        meta: { title: "菜单管理", icon: "user", noCache: false, link: null },
+      },
     ],
   },
 ];

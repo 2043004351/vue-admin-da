@@ -18,12 +18,12 @@
         v-bind="formItemLayout"
       >
         <a-form-item label="用户名" name="username">
-          <a-input v-model="form.username" placeholder="请输入用户名"></a-input>
+          <a-input v-model:value="form.username" placeholder="请输入用户名"></a-input>
         </a-form-item>
         <a-form-item label="密码" name="password">
           <a-input
             type="password"
-            v-model="form.password"
+            v-model:value="form.password"
             placeholder="请输入密码"
           ></a-input>
         </a-form-item>
@@ -45,6 +45,9 @@
 import { reactive, ref } from "vue";
 import { userFrom } from "@/typings/types";
 import { useColorMode } from "@vueuse/core";
+import useUserStore from "@/store/user"
+import { useRouter } from "vue-router"
+const router = useRouter()
 // @ts-ignore
 // import { toggleTheme } from "@zougt/vite-plugin-theme-preprocessor/dist/browser-utils";
 const formItemLayout = {
@@ -59,7 +62,10 @@ const rules = reactive({
   username: [{}],
 });
 const onClickLogin = () => {
-  console.log(form.username);
+  const params = Object.assign({}, form)
+  useUserStore().login(params).then(() => {
+    router.push("/")
+  })
 };
 const onClickRegiste = () => {
   if (!isRegiste.value) {

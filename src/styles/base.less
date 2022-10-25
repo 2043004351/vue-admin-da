@@ -25,12 +25,20 @@
       // background-color: color(~`colorPalette('@{dangerous-color}', 1) `);
     }
   }
+  &.ant-btn-link{
+    border: 0 !important;
+  }
 }
 .theme-dark{
   .ant-btn{
     &.ant-btn-background-ghost{
       background-color: rgba(0, 0, 0, 0) !important;
     }
+  }
+}
+.ant-modal-content{
+  .ant-btn{
+    display: inline-block !important;
   }
 }
 ::-webkit-scrollbar {

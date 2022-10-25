@@ -9,7 +9,6 @@
         <sider-item
           v-for="(route, index) in routeData"
           :route="route"
-          :key="route.path"
           :siderBarOpen="siderBarOpen"
         ></sider-item>
       </a-menu>

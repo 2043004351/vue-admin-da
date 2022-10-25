@@ -1,7 +1,7 @@
 <template>
   <div class="item" v-if="!route.hidden">
     <template v-if="hasOneMenu(route)">
-      <a-menu-item :key="route.path" :title="childrenData.meta.title">
+      <a-menu-item :key="parentPath ? `${parentPath}/${route.path}` : route.path" :title="childrenData.meta.title">
         <div :class="['single-menu', !siderBarOpen ? 'justify-start' : 'justify-center']" flex="~ gap-8px" items-center>
           <i i-ant-design-menu-fold-outlined inline-block></i>
           <span v-if="!siderBarOpen">{{ childrenData.meta.title || "" }}</span>
@@ -13,8 +13,8 @@
         <sider-item
           v-for="(item, index) in route.children"
           :route="item"
-          :key="item.path"
           :siderBarOpen="siderBarOpen"
+          :parent-path="route.path"
         ></sider-item>
       </a-sub-menu>
     </template>
@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
+import { computed, nextTick, onMounted, ref } from "vue";
 // import { number } from "vue-types";
 const props = defineProps({
   route: {
@@ -37,7 +37,15 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  parentPath: {
+    type: String,
+    default:""
+  }
 });
+onMounted(() => {
+  console.log(props.parentPath, "parentPath");
+  console.log(props.route, "route");
+})
 const childrenData: any = ref({
   meta: {},
 });
@@ -51,7 +59,6 @@ const hasOneMenu = computed(() => {
       if (x.hidden) {
         return false;
       } else {
-        console.log(route);
         childrenData.value = x;
         return true;
       }
@@ -61,7 +68,6 @@ const hasOneMenu = computed(() => {
     }
     if (showRouter.length === 0) {
       childrenData.value = { ...route };
-      console.log(childrenData.value);
       return true;
     }
     return false;

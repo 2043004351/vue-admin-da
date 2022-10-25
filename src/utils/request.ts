@@ -1,10 +1,15 @@
-import axios from "axios";
-import { createVueWait } from "vue-wait"
+import axios, { AxiosResponse } from "axios";
+import { getLocalData } from "@/utils/local"
+declare module "axios" {
+  interface AxiosInstance {
+    (config: AxiosRequestConfig): Promise<any>;
+  }
+}
+import { createVueWait } from "vue-wait";
 import useUserStore from "@/store/user";
 
-// axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 const request = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API,
+  baseURL: '/dev-api',
   timeout: 10000,
 });
 
@@ -12,8 +17,8 @@ const request = axios.create({
 request.interceptors.request.use(
   (config: any) => {
     config.headers.common["Content-Type"] = "application/json;charset=UTF-8";
-    const isToken = (config.headers || {}).isToken || false;
-    const { token = "" } = useUserStore();
+    const isToken = (config.headers || {}).isToken || true;
+    const token = getLocalData("token");
     if (isToken) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -27,7 +32,8 @@ request.interceptors.request.use(
 // 响应拦截器
 request.interceptors.response.use(
   (res: any) => {
-    if (res.code === 200) {
+    const code = res.data.code
+    if (code === 200) {
       return res.data;
     }
   },
@@ -35,3 +41,5 @@ request.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export default request;
